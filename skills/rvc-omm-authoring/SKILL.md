@@ -2,7 +2,7 @@
 name: rvc-omm-authoring
 description: 撰寫、更新 RVC 的圖文回覆與示意頁，依內容選擇文字、流程圖或比較表，套用可讀版面並驗收發布結果。用於「放到 RVC」「在 RVC 呈現」「寫進 rvc」或已確定以 RVC 交付的工作；單純討論呈現方式先給提案，不因此發布。不用於官網或管理儀表板實作，也不處理 RVC 主機搬遷。
 metadata:
-  version: "1.1.1"
+  version: "1.2"
 ---
 
 # RVC 圖文寫作

@@ -1,6 +1,8 @@
 ---
 name: project-docs
 description: "建立或更新專案 README.md、todo.md、status.md、handoff.md；主人說「更新交接文件」「寫交接」（todo＋handoff）、「更新說明文件」（status＋README）或「更新文件」（兩組）時使用；處理交給新對話的最新交接入口、決策紀錄、現場殘留與舊內容歸檔，或在採用這些文件前核對日期、Git 基準與工作目錄變更。支援既有檔名大小寫與同用途交接文件；討論格式不代表寫入授權，單純讀取不更新文件。（原名 project-handoff）"
+metadata:
+  version: "1.0"
 ---
 
 # 專案文件與交接

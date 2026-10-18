@@ -1,7 +1,8 @@
 # kimiskills
 
-- 最後更新：2026-10-13 21:59（Asia/Taipei，UTC+08:00）。
+- 最後更新：2026-10-18 18:44（Asia/Taipei，UTC+08:00）。
 - 內容確認：
+  - 2026-10-18 18:44（Asia/Taipei，UTC+08:00）：`rvc-omm-authoring` 的收錄範圍、檔案與使用說明，以及本檔對應的技能表、使用與驗證範圍段落；只重查這個範圍。
   - 2026-10-13 21:51（Asia/Taipei，UTC+08:00）：`project-docs` 的名稱、資料夾路徑與本檔的相關連結（由 `project-handoff` 改名）；只重查這個範圍。
   - 2026-10-13 21:19（Asia/Taipei，UTC+08:00）：`project-docs` 的分組指令與 README 寫入門檻（確認時名稱是 `project-handoff`）。
   - 2026-10-13 06:40（Asia/Taipei，UTC+08:00）：`lean-coding` 的收錄範圍與檔案、技能表、儲存庫可見性。
@@ -9,17 +10,19 @@
   - 各工具的實際安裝另驗。
 - 改名紀錄：2026-10-13，`project-handoff` 改名為 `project-docs`。較早的紀錄以括號註明當時名稱。
 - 儲存庫：`kimfull/kimiskills`（dev 分支）。Git 基準依確認範圍分開：
+  - `rvc-omm-authoring`（2026-10-18 18:44）：`d0693389df823c303c1378a7cb182429a0c290e0`。確認當下工作目錄有未提交的變更：新增 `skills/rvc-omm-authoring/`（9 檔），以及本檔與 `AGENTS.md`。
   - `project-docs` 改名（2026-10-13 21:51）：`c6a3945253d5afc40bd0b34d6fddf2b1e4cf4b9c`。確認當下工作目錄有未提交的變更：`skills/project-handoff/` 整個資料夾改名為 `skills/project-docs/`，其中 `SKILL.md` 與 `agents/openai.yaml` 改了名稱，以及本檔。
   - 分組指令（2026-10-13 21:19）：`2032ca0ff44d1386d3677f66f7b6ee9401cec49d`。當時工作目錄有未提交的變更：`skills/project-handoff/` 的 `SKILL.md` 與 `references/` 的 `handoff.md`、`status.md`、`readme.md`，本檔、`.gitignore`，以及新增的 `AGENTS.md`、`CLAUDE.md`；已隨 `c6a3945` 進版。
   - `lean-coding`（2026-10-13 06:40）：`0a780ae33dc9aca7a5a1f76a502d8a686fba6829`。當時工作目錄有未提交的變更：新增 `skills/lean-coding/` 的兩個檔與本檔修改，已隨 `2032ca0` 進版。
 
-供不同 AI 工具共用的自製技能。目前收錄 `project-docs`（原名 `project-handoff`）與 `lean-coding`；不包含第三方技能、專案資料、金鑰或本機測試紀錄。
+供不同 AI 工具共用的自製技能。目前收錄 `project-docs`（原名 `project-handoff`）、`lean-coding` 與 `rvc-omm-authoring`；不包含第三方技能、專案資料、金鑰或本機測試紀錄。
 
 ## 技能
 
 | 技能 | 用途 |
 | --- | --- |
 | [project-docs](skills/project-docs/SKILL.md) | 整理 README、todo、status 與 handoff，核對事實、版本與接手範圍 |
+| [rvc-omm-authoring](skills/rvc-omm-authoring/SKILL.md) | 撰寫與更新 RVC（AI 圖文回覆站）的頁面：依內容選文字、流程或比較表，套用閱讀版面、範本與補 block 片段，依條件驗收畫面；需要使用者自己的 RVC 站台專案與規範 |
 | [lean-coding](skills/lean-coding/SKILL.md) | 寫程式與改程式時的輕量準則：最小充分變更、驗證力度跟著風險走、架構有需求才加；附 Cloudflare Workers 的取捨與防呆參考 |
 
 `project-docs` 四份文件的分工：README 介紹專案與使用方法；todo 記錄待辦與安排；status 記錄實際狀態；handoff 提供最新交接及下一個動作。按需求建立，不強制湊齊四份。
@@ -46,7 +49,7 @@ git clone https://github.com/kimfull/kimiskills.git
 
 支援技能載入的工具可依其介面選用技能。其他工具可以明確交辦，例如：「請先讀取這份 project-docs/SKILL.md，再依照我的要求整理專案文件。」實際自動探索、安裝位置及引用語法依各工具而定；沒有逐一驗證所有 LLM 的自動觸發。
 
-`skills/project-docs/agents/openai.yaml` 是 Codex 介面中繼資料；不使用它的工具仍可讀取 SKILL.md 及 references。`lean-coding` 沒有這個檔。兩支技能本身都不依賴模型 API、Claude 專屬指令或安裝腳本。
+`project-docs` 與 `rvc-omm-authoring` 的 `agents/openai.yaml` 是 Codex 介面中繼資料；不使用它的工具仍可讀取 SKILL.md 及 references。`lean-coding` 沒有這個檔。三支技能本身都不依賴模型 API、Claude 專屬指令或安裝腳本。`rvc-omm-authoring` 需要使用者自己的 RVC 站台專案與規範；找不到可發布的專案時只做候選、不發布。
 
 ## 同步與維護
 
@@ -75,3 +78,8 @@ git clone https://github.com/kimfull/kimiskills.git
 - 已核對：技能格式；32 個外部連結；關鍵技術敘述對照 Cloudflare 官方文件；與前一版逐條比對規則；獨立 QA，兩項必修已修正並複驗通過。
 - 已實測：三個小型測試專案上，前一版與這一版各跑一次，結果幾乎相同；在 Claude Code（Opus 5.5）上的觸發測試，該選中的 30 次全部選中，不該選中的 30 次沒有誤選。實測之後依 QA 意見改回 8 處措辭，沒有重測。
 - 沒有驗證：與「不安裝這支技能」相比的效益；Codex 與其他 AI 工具的觸發；受試者能執行命令時的驗證行為。
+
+`rvc-omm-authoring`（2026-10-18）：
+
+- 已核對：方案與成品各經獨立 QA（多輪），必修都已修正並複驗；技能格式與相對連結；在真實站台外框以 1350／450／375／640／641px 量測寬度上限、手機左右留白、各項間距、清單、程式碼、長字串與補 block，並人工看截圖。
+- 沒有驗證：各 AI 工具對自然語言的實際觸發；Windows 等其他電腦的安裝與發布。

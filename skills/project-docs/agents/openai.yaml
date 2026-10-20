@@ -1,4 +1,4 @@
 interface:
   display_name: "專案文件與交接"
-  short_description: "整理 README、todo、status 與 handoff，核對版本並保留交接界線"
+  short_description: "整理 README、todo、status、handoff 與 ARCHITECTURE，核對版本並保留交接界線"
   default_prompt: "使用 $project-docs，依我的要求核對或更新指定的專案文件。"

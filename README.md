@@ -1,7 +1,8 @@
 # kimiskills
 
-- 最後更新：2026-10-18 18:44（Asia/Taipei，UTC+08:00）。
+- 最後更新：2026-10-20 14:09（Asia/Taipei，UTC+08:00）。
 - 內容確認：
+  - 2026-10-20 14:09（Asia/Taipei，UTC+08:00）：`project-docs` 1.2 的技能表、文件分工、分組指令與相關說明（含 1.1 的 todo／handoff 點名規則、1.2 的 ARCHITECTURE.md）；只重查這個範圍。
   - 2026-10-18 18:44（Asia/Taipei，UTC+08:00）：`rvc-omm-authoring` 的收錄範圍、檔案與使用說明，以及本檔對應的技能表、使用與驗證範圍段落；只重查這個範圍。
   - 2026-10-13 21:51（Asia/Taipei，UTC+08:00）：`project-docs` 的名稱、資料夾路徑與本檔的相關連結（由 `project-handoff` 改名）；只重查這個範圍。
   - 2026-10-13 21:19（Asia/Taipei，UTC+08:00）：`project-docs` 的分組指令與 README 寫入門檻（確認時名稱是 `project-handoff`）。
@@ -10,6 +11,7 @@
   - 各工具的實際安裝另驗。
 - 改名紀錄：2026-10-13，`project-handoff` 改名為 `project-docs`。較早的紀錄以括號註明當時名稱。
 - 儲存庫：`kimfull/kimiskills`（dev 分支）。Git 基準依確認範圍分開：
+  - `project-docs` 1.2（2026-10-20 14:09）：`a93f697239867dc17268da2ee8946d4f7a67bd2a`。確認當下工作目錄 clean，只有本檔待改。
   - `rvc-omm-authoring`（2026-10-18 18:44）：`d0693389df823c303c1378a7cb182429a0c290e0`。確認當下工作目錄有未提交的變更：新增 `skills/rvc-omm-authoring/`（9 檔），以及本檔與 `AGENTS.md`。
   - `project-docs` 改名（2026-10-13 21:51）：`c6a3945253d5afc40bd0b34d6fddf2b1e4cf4b9c`。確認當下工作目錄有未提交的變更：`skills/project-handoff/` 整個資料夾改名為 `skills/project-docs/`，其中 `SKILL.md` 與 `agents/openai.yaml` 改了名稱，以及本檔。
   - 分組指令（2026-10-13 21:19）：`2032ca0ff44d1386d3677f66f7b6ee9401cec49d`。當時工作目錄有未提交的變更：`skills/project-handoff/` 的 `SKILL.md` 與 `references/` 的 `handoff.md`、`status.md`、`readme.md`，本檔、`.gitignore`，以及新增的 `AGENTS.md`、`CLAUDE.md`；已隨 `c6a3945` 進版。
@@ -21,21 +23,26 @@
 
 | 技能 | 用途 |
 | --- | --- |
-| [project-docs](skills/project-docs/SKILL.md) | 整理 README、todo、status 與 handoff，核對事實、版本與接手範圍 |
+| [project-docs](skills/project-docs/SKILL.md) | 整理 README、todo、status、handoff 與 ARCHITECTURE，核對事實、版本與接手範圍 |
 | [rvc-omm-authoring](skills/rvc-omm-authoring/SKILL.md) | 撰寫與更新 RVC（AI 圖文回覆站）的頁面：依內容選文字、流程或比較表，套用閱讀版面、範本與補 block 片段，依條件驗收畫面；需要使用者自己的 RVC 站台專案與規範 |
 | [lean-coding](skills/lean-coding/SKILL.md) | 寫程式與改程式時的輕量準則：最小充分變更、驗證力度跟著風險走、架構有需求才加；附 Cloudflare Workers 的取捨與防呆參考 |
 
-`project-docs` 四份文件的分工：README 介紹專案與使用方法；todo 記錄待辦與安排；status 記錄實際狀態；handoff 提供最新交接及下一個動作。按需求建立，不強制湊齊四份。
+`project-docs` 各份文件的分工：README 介紹專案與使用方法；todo 記錄待辦與安排；status 記錄實際狀態、決策與等主人處理的事；handoff 提供最新交接及下一個動作；ARCHITECTURE（選配）給要改程式的人看元件地圖、資料流與不能打破的邊界。按需求建立，不強制湊齊。
+
+- todo 與 handoff 只在使用者親口點名時讀寫，平常不讀；文件裡寫的「先讀 todo／handoff」不算點名。
+- 這些文件落後於實際進度是正常的，AI 不主動提醒；只有照文件做會出錯時才講一句。
+- 判斷寫 README 還是 ARCHITECTURE：照著做就能用的寫 README；改程式之前才需要知道的寫 ARCHITECTURE。
 
 `project-docs` 的分組指令：
 
 | 說法 | 更新 |
 | --- | --- |
-| 「更新交接文件」「寫交接」「交給新對話」 | todo、handoff |
+| 「更新交接文件」「寫交接」「交給新對話」 | todo、handoff；另把本輪的決定與等使用者處理的事寫進既有 status |
 | 「更新說明文件」 | status、README |
 | 「更新文件」 | 以上四份 |
+| 「更新架構文件」 | 只有 ARCHITECTURE（不屬任何分組，「更新文件」也不含它） |
 
-分組指令只有 handoff 會在不存在時新建，其他三份不存在就跳過。README 有寫入門檻：已定案、讀者用得到、不會很快失效，三項都符合才寫入；沒有符合的就不動它，並回報。細節以 [SKILL.md](skills/project-docs/SKILL.md) 為準。
+分組指令涵蓋的文件不存在時，有實際內容可寫才補建，沒有就跳過並回報。README 有寫入門檻：已定案、讀者用得到、不會很快失效，三項都符合才寫入；沒有符合的就不動它，並回報。ARCHITECTURE 只寫已提交的現行結構。主機若設有架構掛勾，掛勾提示時可只更新 ARCHITECTURE 受影響的段落，這是「使用者要求才寫」的唯一例外。細節以 [SKILL.md](skills/project-docs/SKILL.md) 為準。
 
 ## 使用
 

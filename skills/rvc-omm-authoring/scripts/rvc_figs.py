@@ -185,7 +185,7 @@ def check(path, record_path):
     errors, need = [], []
     # 只認範本自己的佔位符；正文裡其他雙底線大寫字（例：環境變數名）不算
     names = {m for f in sorted(ASSETS.glob('*')) if f.suffix in ('.html', '.css') for m in re.findall(r'__[A-Z_]+__', f.read_text(encoding='utf8'))}
-    ph = sorted(set(re.findall(r'__[A-Z_]+__', src)) & names)
+    ph = sorted(n for n in names if n in src)
     if ph:
         errors.append('佔位符沒換掉：' + ' '.join(ph))
     tree = Tree()

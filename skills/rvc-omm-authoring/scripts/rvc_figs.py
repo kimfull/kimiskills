@@ -189,16 +189,21 @@ def check(path, record_path):
     tree = Tree()
     tree.feed(src)
     arts = [n for n in tree.root.walk() if n.tag == 'article']
-    if len(arts) != 1 or not ID_RE.match(arts[0].attrs.get('id') or ''):
+    # 沒用 base CSS 的舊頁：舊寫法可能撞到 1.4 的規則，除了下面幾項基本錯誤，其他都只判要驗畫面，不逼改舊區塊
+    old = not any(name == 'base' for name, _ in MARK.findall(src))
+    if len(arts) != 1 or (not old and not ID_RE.match(arts[0].attrs.get('id') or '')):
         errors.append('要剛好一個 article，且 id 符合格式')
         return report(errors, need, [])
-    art, art_id = arts[0], arts[0].attrs['id']
+    art, art_id = arts[0], arts[0].attrs.get('id') or ''
+    if not ID_RE.match(art_id):
+        need.append('舊頁的 article id 不能直接當 CSS 選擇器（沒有 id 或不是字母開頭），1.4 圖型的 CSS 會選不到')
     # Worker 會把整份原稿嵌進頁面，article 外面的任何內容都會影響整頁
     outside = [p for p in tree.root.parts if p is not art and not (isinstance(p, str) and not p.strip())]
     if outside:
         errors.append('article 外面還有內容（原稿只能有一個 article）')
     if not re.match(r'\s*<article\b', src) or not re.search(r'</article>\s*$', src) or src.count('</article>') != 1:
         errors.append('原稿要從 <article> 開始、以 </article> 結束，而且只有一個 article')
+    base_errors = len(errors)
     styles = [n for n in art.walk() if n.tag == 'style']
     if len(styles) != 1:
         need.append(f'文章裡有 {len(styles)} 個 style，範本只用一個')
@@ -248,6 +253,12 @@ def check(path, record_path):
             words = BADGE_WORDS if in_figure(n) else BLOCK_BADGE_WORDS if (n.parent is not None and 'ra-block-meta' in n.parent.cls) else BADGE_WORDS | BLOCK_BADGE_WORDS
             if n.text().strip() not in words or n.children:
                 errors.append(f'標籤「{n.text().strip()[:10]}」不是固定用詞（圖裡：{"、".join(sorted(BADGE_WORDS))}；區塊標頭：首發、補充）')
+        if 'ra-ver' in c:
+            p, row = n.parent, n.parent.parent if n.parent is not None else None
+            lead = next((x for x in p.parts if not isinstance(x, str) or x.strip()), None) if p is not None else None
+            if (p is None or p.tag != 'p' or not p.cls & {'ra-before', 'ra-after'} or row is None or row.parent is None or 'ra-ba' not in row.parent.cls
+                    or lead is not n or sum('ra-ver' in x.cls for x in p.walk()) != 1 or not p.text(lambda x: 'ra-ver' in x.cls).strip()):
+                errors.append('ra-ver 只能放在前後對照 p.ra-before／p.ra-after 的最前面，每格一個，後面要接內容')
         if n.tag == 'td' and in_figure(n) and not n.text().strip():
             errors.append('比較表的格子不能是空的，沒有內容就寫「無」或「—」')
         if 'ra-legend' in c and any(x.tag != 'span' or [y for y in x.children if 'badge' not in y.cls] or len(x.children) != 1 for x in n.children):
@@ -415,6 +426,9 @@ def check(path, record_path):
     missing = sorted(figs - set(used))
     if missing:
         errors.append('用了圖卻沒放對應 CSS：' + ' '.join(missing))
+    if old:
+        need += errors[base_errors:]
+        del errors[base_errors:]
 
     rec = Path(record_path)
     if not rec.exists():

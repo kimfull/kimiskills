@@ -15,9 +15,9 @@
   #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) tbody tr { margin-top:16px; border:1px solid var(--color-base-300); border-radius:6px; overflow:hidden; }
   #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) tbody th { padding:14px 16px; background:var(--color-base-300); border-bottom:2px solid var(--color-primary); }
   #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) tbody th .badge { margin-left:8px; }
-  #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) td { position:relative; padding:12px 16px 12px calc(6.5em + 28px); }
+  #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) td { position:relative; min-height:calc(16px * 1.7 + 24px); padding:12px 16px 12px calc(6.5em + 28px); }
   #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) td:last-child { border-bottom:0; }
-  #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) td::before { content:attr(data-label); position:absolute; left:16px; top:12px; width:6.5em; font-weight:600; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
+  #__RVC_ID__ .ra-compare:not(:has(thead th:nth-child(5))) td::before { content:attr(data-label); position:absolute; left:16px; top:12px; width:6.5em; white-space:nowrap; font-weight:600; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
 }
 @container (max-width:759px) {
   #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) :is(thead,tbody,tr,th,td) { display:block; }
@@ -25,7 +25,7 @@
   #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) tbody tr { margin-top:16px; border:1px solid var(--color-base-300); border-radius:6px; overflow:hidden; }
   #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) tbody th { padding:14px 16px; background:var(--color-base-300); border-bottom:2px solid var(--color-primary); }
   #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) tbody th .badge { margin-left:8px; }
-  #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) td { position:relative; padding:12px 16px 12px calc(6.5em + 28px); }
+  #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) td { position:relative; min-height:calc(16px * 1.7 + 24px); padding:12px 16px 12px calc(6.5em + 28px); }
   #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) td:last-child { border-bottom:0; }
-  #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) td::before { content:attr(data-label); position:absolute; left:16px; top:12px; width:6.5em; font-weight:600; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
+  #__RVC_ID__ .ra-compare:has(thead th:nth-child(5)) td::before { content:attr(data-label); position:absolute; left:16px; top:12px; width:6.5em; white-space:nowrap; font-weight:600; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
 }

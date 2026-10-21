@@ -31,7 +31,9 @@ MARK = re.compile(r'/\* rvc-omm:([a-z-]+):begin \*/\n(.*?)\n/\* rvc-omm:\1:end \
 # 已驗範圍（改這裡等於改了檢查工具，範本驗證紀錄會失效）
 RANGES = {'flow': (2, 6), 'road': (3, 6), 'ba': (3, 8), 'zones': (2, 4), 'lanes': (2, 4), 'lane_steps': (3, 6),
           'options': (2, 4), 'criteria': (2, 5)}
-TEXT_MAX = {'h4': 12, 'block': 40, 'decision': 24, 'criterion': 6, 'option': 12, 'caption': 20, 'lane': 5, 'when': 8, 'word': 32}
+TEXT_MAX = {'h4': 12, 'block': 40, 'decision': 24, 'ver': 2, 'criterion': 6, 'option': 12, 'caption': 20, 'lane': 5, 'when': 8, 'word': 32}
+BADGE_WORDS = {'已完成', '進行中', '規劃中', '待決', '建議'}
+BLOCK_BADGE_WORDS = {'首發', '補充'}
 EXTRA_CLASSES = {'card', 'card-body', 'badge', 'badge-primary', 'badge-outline', 'badge-ghost', 'badge-sm'}
 INLINE = {'span', 'b', 'strong', 'em', 'i', 'a', 'code', 'wbr', 'br', 'small', 'mark', 'sup', 'sub', 'time'}
 # 文章裡只認這些標籤；其他標籤（svg、iframe、script、link、表單、details、math…）一律判要驗畫面
@@ -242,6 +244,12 @@ def check(path, record_path):
                     need.append(f'{key} 裡的字要放進 h4 或 p')
         if in_figure(n) and (n.tag in TEXT_CELLS or c & {'ra-ans', 'ra-when'}) and any(x.tag not in INLINE for x in n.children):
             need.append(f'{n.tag} 格子裡放了區塊元素，範本只驗過文字與行內元素')
+        if 'badge' in c:
+            words = BADGE_WORDS if in_figure(n) else BLOCK_BADGE_WORDS if (n.parent is not None and 'ra-block-meta' in n.parent.cls) else BADGE_WORDS | BLOCK_BADGE_WORDS
+            if n.text().strip() not in words or n.children:
+                errors.append(f'標籤「{n.text().strip()[:10]}」不是固定用詞（圖裡：{"、".join(sorted(BADGE_WORDS))}；區塊標頭：首發、補充）')
+        if n.tag == 'td' and in_figure(n) and not n.text().strip():
+            errors.append('比較表的格子不能是空的，沒有內容就寫「無」或「—」')
         if 'ra-legend' in c and any(x.tag != 'span' or [y for y in x.children if 'badge' not in y.cls] or len(x.children) != 1 for x in n.children):
             need.append('ra-legend 每一項要是 span，裡面只放一個狀態詞 badge 加說明文字')
         if n.tag == 'figure' and 'ra-figure' not in c:
@@ -396,7 +404,7 @@ def check(path, record_path):
             if t.strip() and width(t) > lim:
                 need.append(f'圖內文字「{t.strip()[:16]}…」超過已驗的 {lim} 字寬')
         for x in f.walk():
-            for cls_name, lim in (('ra-when', TEXT_MAX['when']), ('ra-who', TEXT_MAX['lane'])):
+            for cls_name, lim in (('ra-when', TEXT_MAX['when']), ('ra-who', TEXT_MAX['lane']), ('ra-ver', TEXT_MAX['ver'])):
                 if cls_name in x.cls and width(x.text()) > lim:
                     need.append(f'「{x.text().strip()[:12]}」超過已驗的 {lim} 字寬')
         for w in re.findall(r'[A-Za-z0-9_./:-]+', f.text()):

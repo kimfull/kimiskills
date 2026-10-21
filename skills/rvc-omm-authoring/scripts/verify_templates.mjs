@@ -70,8 +70,8 @@ try {
   const pub = await mf.dispatchFetch(origin + prefix + '/api/publish', { method: 'POST', headers: { 'Cf-Access-Jwt-Assertion': owner, 'Content-Type': 'application/json', Origin: origin, 'X-RVC-CSRF': csrf, Cookie: '__Host-rvc-csrf=' + csrf }, body: JSON.stringify({ slug, html, expectedVersion: null, requestId: randomUUID() }) });
   if (pub.status !== 200) throw new Error('本機發布失敗 ' + pub.status + ' ' + (await pub.text()).slice(0, 200));
   server = createServer(async (rq, rs) => { try { const h = { ...rq.headers, 'Cf-Access-Jwt-Assertion': owner }; delete h.host; const r = await mf.dispatchFetch(origin + rq.url, { method: rq.method, headers: h }); rs.statusCode = r.status; for (const [k, v] of r.headers) rs.setHeader(k, v); rs.end(Buffer.from(await r.arrayBuffer())); } catch { rs.writeHead(500); rs.end('proxy error'); } });
-  await new Promise(r => server.listen(0, '127.0.0.1', r));
-  const local = `http://127.0.0.1:${server.address().port}`;
+  await new Promise(r => server.listen(0, 'localhost', r));
+  const local = `http://localhost:${server.address().port}`;
   const { chromium } = await import('/root/.claude/skills/gstack/node_modules/playwright/index.mjs');
   browser = await chromium.launch({ headless: true });
   for (const width of widths) {

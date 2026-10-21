@@ -51,27 +51,80 @@
 
 ## 使用方式
 
-- [base.html](../assets/base.html)：新單篇外框，保留一個article與第一個h2。
-- [reading.css](../assets/reading.css)：共用尺寸與排版，放入base的style。清單、pre、行內 code 的樣式只套在沒有 class 的元素；用 DaisyUI 元件時照元件本身的樣式。
-- [prose.html](../assets/prose.html)：文字段落。
-- [flow.html](../assets/flow.html)：三步、一個判斷、兩個分支的版面示例；依實際關係改寫，其他結構依技能驗畫面，不補假步驟或假分支來湊範本。
-- [comparison.html](../assets/comparison.html)：同欄位比較表。
-- [block.html](../assets/block.html)：替用本範本的頁補內容（多 block）。
+片段都在技能目錄的 `assets/`。每種圖一個 HTML 示例加一個 CSS 檔；CSS 用技能目錄的 `scripts/rvc_figs.py css` 串接，不手抄。用到任何圖型時，工具會自動加上所有圖共用的 figure.css。
+
+| 片段 | 用途 | CSS |
+|---|---|---|
+| [base.html](../assets/base.html) | 新單篇外框，保留一個 article 與第一個 h2 | reading.css（一定要） |
+| [prose.html](../assets/prose.html) | 文字段落 | 不另加 |
+| [flow.html](../assets/flow.html) | 步數不固定的流程，可接一個是／否判斷 | flow |
+| [road.html](../assets/road.html) | 路線圖與狀態詞說明 | road |
+| [before-after.html](../assets/before-after.html) | 前後對照 | before-after |
+| [zones.html](../assets/zones.html) | 各方負責什麼＋共同碰到的事 | zones |
+| [lanes.html](../assets/lanes.html) | 泳道圖：一個角色一條道 | lanes（自動帶 flow） |
+| [comparison.html](../assets/comparison.html) | 比較表（`table.ra-compare`）：一列一個選項，手機變卡片 | comparison |
+| [block.html](../assets/block.html) | 替用本範本的頁補內容（多 block） | 不另加 |
 
 組合步驟：
 
-1. 為整篇選唯一、可直接用在CSS選擇器的ID：必須符合 `^[A-Za-z][A-Za-z0-9_-]*$`（英文字母起首，後續僅英數、底線或連字號），例如 `rvc-release-note`。不要用句點、冒號、空白或任意使用者原文作ID。將 base 與 CSS 的 `__RVC_ID__` 全部換成此值。
-2. 依專案正本填入 `__AI__` 與 `__TOPIC__`；填 `__TITLE__`、`__INTRO__`。文字與屬性值須適當HTML跳脫，不把原始外部內容直接當HTML。
-3. 將CSS插入 `__CSS__`，需要的片段插入 `__SECTIONS__`。每個片段的 `__SECTION_ID__` 都換成不同ID，且符合步驟1的同一格式；同步CSS以外的標題關聯屬性。也可自行寫符合本版面的內容。
-4. 改寫片段中的示例內容，不把示例流程當成實際任務事實；移除不需要的段落。發布前確認沒有任何 `__...__` 標記殘留。
+1. 為整篇選唯一、可直接用在 CSS 選擇器的 ID：必須符合 `^[A-Za-z][A-Za-z0-9_-]*$`（英文字母起首，後續僅英數、底線或連字號），例如 `rvc-release-note`。不要用句點、冒號、空白或任意使用者原文作 ID。
+2. 依專案正本填入 `__AI__` 與 `__TOPIC__`；填 `__TITLE__`、`__INTRO__`。文字與屬性值須適當 HTML 跳脫，不把原始外部內容直接當 HTML。
+3. 在技能目錄執行 `python3 scripts/rvc_figs.py css <ID> <這篇用到的圖型…>`，把輸出整段放進 `__CSS__`。輸出已換好 ID，並用 `/* rvc-omm:圖型:begin */` 標記包住，檢查工具靠標記比對；不要刪標記或改裡面的內容。
+4. 需要的片段放進 `__SECTIONS__`，每個 `__SECTION_ID__` 換成不同 ID（同第 1 步格式），同步標題關聯屬性。改寫示例內容，不把示例當成實際任務事實；移除不需要的段落。
+5. 跑 `python3 scripts/rvc_figs.py check <候選.html>`，依結果決定修正、免驗或驗畫面。
 
-每篇輸出的HTML自帶當時CSS，便於單篇穩定呈現；後續技能調整不自動同步所有舊文。常用數值只在reading.css維護一份執行樣式，更新時同步上表並驗收。
+範本的子元素順序是版面的一部分，工具會檢查：泳道先放全部道名、再依步驟順序放步驟；三區圖先放各區、共同帶最多一個放最後；前後對照第一列是欄頭；比較表每列先放選項的 th；判斷先放判斷句、再放兩個結果。
 
-## 正式外框的兩個陷阱
+每篇輸出的 HTML 自帶當時 CSS，後續技能調整不自動同步舊文。常用數值只在 reading.css 維護一份；改數值要同步上方寬度表，並重驗範本。
+
+## 已驗範圍
+
+範本在真實外框驗過下列數量與字寬；檢查工具超出就判「要驗畫面」。字寬：中日韓字算 1，其他字元算 0.55。
+
+| 圖型 | 數量 | 其他 |
+|---|---|---|
+| flow | 2–6 步；判斷 0 或 1 個，結果固定是、否兩個 | 寬度 640px 起 1–4 步橫排，860px 起 5–6 步橫排 |
+| road | 3–6 站 | 600px 起 1–4 站橫排，860px 起 5–6 站橫排 |
+| before-after | 3–8 列 | 600px 起橫排，欄頭只標一次 |
+| zones | 2–4 區；共同帶可省，項數要等於區數 | 600px 起 2–3 區橫排，760px 起 4 區橫排 |
+| lanes | 2–4 道 × 3–6 步；角色名最多 5 字寬 | 680px 起 1–4 步橫排，880px 起 5–6 步橫排 |
+| comparison | 2–4 個選項 × 2–5 個判準 | 判準 1–3 個時 600px 以下、4–5 個時 760px 以下改成卡片 |
+
+所有圖：h4 最多 12 字寬；段落、清單項、表格格子最多 40 字寬；比較表的判準名（欄頭）最多 6 字寬、選項名最多 12 字寬（不算「建議」標記）、表名最多 20 字寬；路線圖的日期或階段最多 8 字寬；英數連續字最多 32 字元。字寬：中日韓字算 1，英文大寫與數字算 0.65，其他英數算 0.55。寬度指圖所在容器，不是螢幕；有側欄的筆電容器只有約 617–900px。
+
+圖內主要文字至少 16px；只有狀態詞與「建議」標記（約 14–16px）、前後對照的版本小標與三區圖的來源路徑（14px）可以較小。用了範本以外的 class、行內樣式（泳道的 --steps／--r／--c 除外）、圖片、SVG、iframe、腳本、外部 CSS，或不是 ra-compare 的表格，工具都判「要驗畫面」。
+
+## 狀態詞與判斷
+
+狀態詞固定四個，用文字分辨，顏色只輔助：
+
+| 狀態 | 意思 | 寫法 |
+|---|---|---|
+| 已完成 | 做完、已在用 | `badge badge-primary` |
+| 進行中 | 正在做 | `badge badge-outline badge-primary` |
+| 規劃中 | 決定要做、還沒動 | `badge ra-st-plan` |
+| 待決 | 還沒決定做不做 | `badge ra-st-open` |
+
+路線圖的站點另加 class：已完成 `is-done`、規劃中 `is-plan`、待決 `is-open`，進行中不加。
+
+判斷用 `.ra-judge`：判斷句放 `.ra-decision`，兩個結果分別是 `.ra-branch.is-yes`（實心「是」）與 `.ra-branch.is-no`（空心「否」）。寬時判斷框置中、往下分岔到左右兩個結果；窄時判斷框下方一條主幹，分別接到「是」「否」，不會看起來像「否」接在「是」後面。每個結果卡最後寫去向：回到前面的步驟用 `.ra-goto.is-loop`（例：回到 02），停在這裡用 `.ra-goto.is-end`（例：結束）。角色或資料去向寫在 `.ra-hand`，格式「→ 對象：<wbr>交付物」。
+
+## 重驗範本
+
+技能的 CSS、外框（RVC 共用 CSS 與頁面組成）任一改過，檢查工具就判紀錄過期。重驗做法：
+
+1. 經工作機的共用排隊入口、申報 1 個瀏覽器，執行 `node scripts/verify_templates.mjs <證據目錄> --live`。它用 RVC Worker 原始碼在本機產生真實外框，量固定頁 `scripts/template-fixture.html` 的每張圖在 11 種寬度下有沒有溢出、文字重疊、箭頭壓字或過小文字；`--live` 另外比對正式站與本機外框 CSS。
+2. 量測通過後，親自看證據目錄裡的截圖；量測不能代替看圖。
+3. 改過量測方式時，先用 `--extra-css` 加一段故意壞掉的樣式跑對照組，確認會失敗。
+4. 都通過才執行 `python3 scripts/rvc_figs.py record --evidence <證據目錄>` 寫紀錄（預設在 RVC repo 的 `.temp/rvc-omm-template-check/record.json`）。它只從證據目錄的 result.json 抄：那次驗證要通過、有 `--live`、不是對照組，而且驗證後片段 CSS、檢查工具、固定頁與外框都沒再改；任一不符就拒絕寫入。
+
+## 正式外框的三個陷阱
 
 目前生成頁會有 `main > section > article`，不要把 `main:has(> #ID)` 當成一定成立。範本用 `main:has(#ID)` 限定該篇頁面；實際包裝以當前repo為準。驗收應含build注入的發布日期，不能只換掉main內容而丟失section外框。
 
 DaisyUI 的 `.card figure` 可能設定flex，將圖說排到圖旁；reading.css對該篇figure明確設block。外層 `.card-body` 的預設padding與gap也清除，避免破壞12px與量測間距。勿把這些局部覆寫改成全站選擇器。
+
+站台共用 CSS 會強制改 Claude 文章裡 `time` 的顏色。圖內的日期或階段用 `span.ra-when`，不用 `time`；檢查工具在路線圖裡看到 `time` 會報錯。
 
 ## 補 block
 
@@ -85,4 +138,4 @@ DaisyUI 的 `.card figure` 可能設定flex，將圖說排到圖旁；reading.cs
 
 ## 舊頁
 
-不是用本範本寫的既有頁，局部新增沿用該頁現有的寫法；單卡舊頁第一次補 block 時，外層照 repo〈Block 規矩〉，meta 列照抄任一篇舊的多 block 頁，不必恢復舊範本；首發 block 的 data-block-ai 同〈補 block〉第 1 步，填原作者。不要直接塞base或換整篇ID，否則舊圖、anchor與樣式可能失效。整批轉換舊頁不在本技能範圍。
+不是用本範本寫的既有頁，或用 1.3 以前範本寫的頁，局部新增沿用該頁現有的寫法；原本的 style 不動。要在這種頁加 1.4 的新圖型，用 `rvc_figs.py css --no-base <該頁ID> <圖型…>`：輸出含共用的 figure.css 與那幾種圖，不含 reading.css，接在原 style 後面，並驗畫面（檢查工具會判「要驗畫面」）。1.4 的比較表用 `ra-compare`，不會影響舊頁的 `ra-table`；1.4 的判斷把分岔區上距歸零，舊頁 reading.css 的 `.ra-branches` 上距不會讓分岔線斷開，但仍以畫面為準。單卡舊頁第一次補 block 時，外層照 repo〈Block 規矩〉，meta 列照抄任一篇舊的多 block 頁，不必恢復舊範本；首發 block 的 data-block-ai 同〈補 block〉第 1 步，填原作者。不要直接塞base或換整篇ID，否則舊圖、anchor與樣式可能失效。整批轉換舊頁不在本技能範圍。

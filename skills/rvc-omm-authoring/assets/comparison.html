@@ -1,16 +1,16 @@
 <section id="__SECTION_ID__" class="ra-section" aria-labelledby="__SECTION_ID__-title">
-  <div class="ra-heading ra-copy"><h3 id="__SECTION_ID__-title">用相同欄位，對照差異。</h3></div>
-  <div class="ra-prose ra-copy"><p>比較內容要有共同的判準。先說清楚要比較什麼，再列出每種選項的差異與適用條件。</p></div>
+  <div class="ra-heading ra-copy"><h3 id="__SECTION_ID__-title">用相同判準，選一個。</h3></div>
+  <div class="ra-prose ra-copy"><p>先說清楚要比較什麼。一列一個選項、一欄一個判準；建議的那一列加標記與底色。</p></div>
   <figure class="ra-figure">
-    <table class="ra-table">
-      <caption>兩種呈現方式的用途</caption>
-      <thead><tr><th scope="col">項目</th><th scope="col">文字段落</th><th scope="col">流程圖</th></tr></thead>
+    <table class="ra-compare">
+      <caption>三種做法</caption>
+      <thead><tr><th scope="col">做法</th><th scope="col">要花的時間</th><th scope="col">風險</th><th scope="col">狀態</th></tr></thead>
       <tbody>
-        <tr><th scope="row">擅長說明</th><td>理由與條件</td><td>順序與分支</td></tr>
-        <tr><th scope="row">閱讀方式</th><td>逐段理解</td><td>先看全貌</td></tr>
-        <tr><th scope="row">需要注意</th><td>控制每行長度</td><td>保持圖內字體可讀</td></tr>
+        <tr class="ra-pick"><th scope="row">做法甲<span class="badge badge-primary">建議</span></th><td data-label="要花的時間">半天</td><td data-label="風險">低</td><td data-label="狀態"><span class="badge ra-st-plan">規劃中</span></td></tr>
+        <tr><th scope="row">做法乙</th><td data-label="要花的時間">兩天</td><td data-label="風險">中</td><td data-label="狀態"><span class="badge ra-st-open">待決</span></td></tr>
+        <tr><th scope="row">維持現狀</th><td data-label="要花的時間">不用</td><td data-label="風險">問題留著</td><td data-label="狀態"><span class="badge badge-primary">已完成</span></td></tr>
       </tbody>
     </table>
-    <figcaption class="ra-copy">所有選項一起呈現；欄位太多時重新分組，不把字縮小。</figcaption>
+    <figcaption class="ra-copy">每格寫短詞；td 的 data-label 要和欄頭同名，手機卡片靠它標出判準。</figcaption>
   </figure>
 </section>

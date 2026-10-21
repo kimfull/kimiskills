@@ -1,0 +1,25 @@
+/* rvc-omm road：路線圖（3–6 站）。站的 class：is-done 已完成、預設 進行中、is-plan 規劃中、is-open 待決 */
+#__RVC_ID__ .ra-road { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:minmax(0,1fr); row-gap:32px; }
+#__RVC_ID__ .ra-road > li { position:relative; padding-left:40px; min-width:0; }
+#__RVC_ID__ .ra-road > li::before { content:''; position:absolute; left:4px; top:7px; width:16px; height:16px; border-radius:50%; background:var(--color-base-100); border:2px solid var(--color-primary); }
+#__RVC_ID__ .ra-road > li.is-done::before { background:var(--color-primary); }
+#__RVC_ID__ .ra-road > li.is-plan::before { border-color:color-mix(in srgb,var(--color-base-content) 60%,transparent); }
+#__RVC_ID__ .ra-road > li.is-open::before { border-style:dashed; border-color:color-mix(in srgb,var(--color-base-content) 60%,transparent); }
+#__RVC_ID__ .ra-road > li:not(:last-child)::after { content:''; position:absolute; left:11px; top:28px; bottom:-28px; border-left:2px solid var(--color-base-300); }
+#__RVC_ID__ .ra-road .ra-when { display:block; font-size:16px; line-height:1.4; font-variant-numeric:tabular-nums; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
+#__RVC_ID__ .ra-road h4 { margin-top:4px; font-size:18px; line-height:1.5; }
+#__RVC_ID__ .ra-road .badge { margin-top:8px; }
+#__RVC_ID__ .ra-road p { margin-top:8px; font-size:16px; line-height:1.7; }
+/* 1–4 站 600px 起橫排；5–6 站 860px 起橫排 */
+@container (min-width:600px) {
+  #__RVC_ID__ .ra-road:not(:has(> li:nth-child(5))) { grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); column-gap:24px; }
+  #__RVC_ID__ .ra-road:not(:has(> li:nth-child(5))) > li { padding-left:0; padding-top:36px; }
+  #__RVC_ID__ .ra-road:not(:has(> li:nth-child(5))) > li::before { left:0; top:0; }
+  #__RVC_ID__ .ra-road:not(:has(> li:nth-child(5))) > li:not(:last-child)::after { left:24px; right:-20px; top:9px; bottom:auto; border-left:0; border-top:2px solid var(--color-base-300); }
+}
+@container (min-width:860px) {
+  #__RVC_ID__ .ra-road:has(> li:nth-child(5)) { grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); column-gap:24px; }
+  #__RVC_ID__ .ra-road:has(> li:nth-child(5)) > li { padding-left:0; padding-top:36px; }
+  #__RVC_ID__ .ra-road:has(> li:nth-child(5)) > li::before { left:0; top:0; }
+  #__RVC_ID__ .ra-road:has(> li:nth-child(5)) > li:not(:last-child)::after { left:24px; right:-20px; top:9px; bottom:auto; border-left:0; border-top:2px solid var(--color-base-300); }
+}

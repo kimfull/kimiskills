@@ -5,3 +5,5 @@
 *.log
 .temp/
 .memo/
+.wrangler/
+__pycache__/

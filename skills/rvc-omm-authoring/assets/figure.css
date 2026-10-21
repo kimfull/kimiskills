@@ -1,0 +1,10 @@
+/* rvc-omm figure：所有圖共用（容器、圖說、只給螢幕閱讀器的文字、狀態詞）。用到任何圖型都要放；舊頁補 block 也要。 */
+/* 圖的版面依圖所在容器寬度切換，不依螢幕寬度 */
+#__RVC_ID__ .ra-figure { display:block; margin-top:var(--ra-figure); width:100%; container-type:inline-size; }
+#__RVC_ID__ figcaption { margin-top:16px; font-size:16px; line-height:1.7; color:color-mix(in srgb,var(--color-base-content) 70%,transparent); }
+#__RVC_ID__ .ra-sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+/* 狀態詞：已完成 badge-primary；進行中 badge-outline badge-primary；規劃中 ra-st-plan；待決 ra-st-open */
+#__RVC_ID__ .badge.ra-st-plan { background:transparent; border:1px solid color-mix(in srgb,var(--color-base-content) 40%,transparent); color:color-mix(in srgb,var(--color-base-content) 80%,transparent); }
+#__RVC_ID__ .badge.ra-st-open { background:transparent; border:1px dashed color-mix(in srgb,var(--color-base-content) 55%,transparent); color:color-mix(in srgb,var(--color-base-content) 80%,transparent); }
+#__RVC_ID__ .ra-legend { display:flex; flex-wrap:wrap; gap:12px 20px; margin-top:24px; font-size:16px; line-height:1.6; }
+#__RVC_ID__ .ra-legend > span { display:inline-flex; align-items:center; gap:8px; }

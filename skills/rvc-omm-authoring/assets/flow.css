@@ -1,0 +1,62 @@
+/* rvc-omm flow：步數不固定的流程（2–6 步）＋可省略的判斷分支。泳道圖也要先放這一段。 */
+#__RVC_ID__ .ra-flow { padding:28px; background:var(--color-base-200); border:1px solid var(--color-base-300); border-radius:6px; }
+#__RVC_ID__ .ra-chain { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:minmax(0,1fr); }
+#__RVC_ID__ .ra-chain > li { position:relative; display:grid; grid-template-columns:40px minmax(0,1fr); column-gap:16px; padding-bottom:40px; min-width:0; }
+#__RVC_ID__ .ra-chain > li:last-child { padding-bottom:0; }
+#__RVC_ID__ .ra-chain > li > * { grid-column:2; }
+#__RVC_ID__ .ra-chain > li > .ra-no { grid-column:1; grid-row:1 / span 3; }
+#__RVC_ID__ .ra-chain > li:not(:last-child)::before { content:''; position:absolute; left:19px; top:48px; bottom:12px; border-left:2px solid color-mix(in srgb,var(--color-primary) 45%,transparent); }
+#__RVC_ID__ .ra-chain > li:not(:last-child)::after { content:'↓'; position:absolute; left:12px; bottom:-4px; color:var(--color-primary); font-size:18px; line-height:1; }
+#__RVC_ID__ .ra-no { display:grid; place-items:center; width:40px; height:40px; border:1px solid var(--color-primary); border-radius:50%; color:var(--color-primary); font-size:16px; line-height:1; font-variant-numeric:tabular-nums; }
+#__RVC_ID__ .ra-chain h4 { font-size:18px; line-height:1.5; }
+#__RVC_ID__ .ra-chain p { margin-top:8px; font-size:16px; line-height:1.7; }
+#__RVC_ID__ .ra-out { color:var(--color-primary); }
+/* 步數越多，容器要越寬才橫排：1–4 步 640px，5–6 步 860px */
+@container (min-width:640px) {
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):not(:has(> li:nth-child(5))) { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:minmax(0,240px); justify-content:start; column-gap:40px; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):not(:has(> li:nth-child(5))) > li { display:block; padding-bottom:0; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):not(:has(> li:nth-child(5))) > li > .ra-no { margin-bottom:12px; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):not(:has(> li:nth-child(5))) > li:not(:last-child)::before { display:none; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):not(:has(> li:nth-child(5))) > li:not(:last-child)::after { content:'→'; left:auto; right:-30px; top:11px; bottom:auto; }
+}
+@container (min-width:860px) {
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):has(> li:nth-child(5)) { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:minmax(0,240px); justify-content:start; column-gap:40px; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):has(> li:nth-child(5)) > li { display:block; padding-bottom:0; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):has(> li:nth-child(5)) > li > .ra-no { margin-bottom:12px; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):has(> li:nth-child(5)) > li:not(:last-child)::before { display:none; }
+  #__RVC_ID__ .ra-chain:not(.ra-lanes):has(> li:nth-child(5)) > li:not(:last-child)::after { content:'→'; left:auto; right:-30px; top:11px; bottom:auto; }
+}
+/* 判斷：置中的框，分岔線接到「是」實心／「否」空心標籤，結果卡底部寫去向 */
+#__RVC_ID__ .ra-judge { margin-top:40px; }
+#__RVC_ID__ .ra-judge .ra-decision { display:flex; align-items:center; justify-content:flex-start; gap:12px; width:100%; margin:0; padding:12px 24px; border:2px solid var(--color-primary); border-radius:999px; background:var(--color-base-100); font-size:18px; font-weight:600; line-height:1.5; text-align:center; }
+#__RVC_ID__ .ra-judge .ra-diamond { flex:none; width:14px; height:14px; border:2px solid var(--color-primary); transform:rotate(45deg); }
+#__RVC_ID__ .ra-judge .ra-branches { position:relative; margin-top:0; padding:24px 0 0 40px; display:grid; grid-template-columns:minmax(0,1fr); gap:32px; }
+/* 窄時：判斷框下方一條主幹，分別接到「是」「否」，兩個結果並列在主幹右邊 */
+#__RVC_ID__ .ra-judge .ra-branch::before { content:''; position:absolute; left:-18px; top:-32px; bottom:0; border-left:2px solid var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-branch:first-child::before { top:-24px; }
+#__RVC_ID__ .ra-judge .ra-branch:last-child::before { bottom:auto; height:calc(32px + 18px); }
+#__RVC_ID__ .ra-judge .ra-branch:first-child:last-child::before { height:calc(24px + 18px); }
+#__RVC_ID__ .ra-judge .ra-branch::after { content:''; position:absolute; left:-18px; top:18px; width:18px; border-top:2px solid var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-branch { position:relative; display:flex; flex-direction:column; min-width:0; }
+#__RVC_ID__ .ra-judge .ra-ans { position:relative; z-index:1; display:block; width:fit-content; min-width:64px; margin:0 0 -18px; padding:2px 18px; border:2px solid var(--color-primary); border-radius:999px; font-size:18px; font-weight:700; line-height:1.6; text-align:center; }
+#__RVC_ID__ .ra-judge .is-yes .ra-ans { background:var(--color-primary); color:var(--color-primary-content); }
+#__RVC_ID__ .ra-judge .is-no .ra-ans { background:var(--color-base-100); color:var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-bcard { flex:1; padding:32px 20px 20px; border:1px solid var(--color-base-300); border-radius:6px; background:var(--color-base-100); }
+#__RVC_ID__ .ra-judge .ra-bcard h4 { font-size:18px; line-height:1.5; }
+#__RVC_ID__ .ra-judge .ra-bcard p { margin-top:8px; font-size:16px; line-height:1.7; }
+#__RVC_ID__ .ra-judge .ra-goto { display:flex; align-items:center; gap:8px; margin-top:16px; padding-top:12px; border-top:1px dashed var(--color-base-300); font-weight:600; color:var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-goto.is-loop::before { content:'↺'; font-size:20px; line-height:1; }
+#__RVC_ID__ .ra-judge .ra-goto.is-end::before { content:''; width:12px; height:12px; border-radius:2px; background:var(--color-primary); }
+/* 寬時：判斷框置中，往下分岔到左右兩個結果 */
+@container (min-width:600px) {
+  #__RVC_ID__ .ra-judge .ra-decision { justify-content:center; width:fit-content; max-width:100%; margin:0 auto; }
+  #__RVC_ID__ .ra-judge .ra-branches { grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px; padding:56px 0 0; }
+  #__RVC_ID__ .ra-judge .ra-branches::before { content:''; position:absolute; top:0; left:50%; height:28px; border-left:2px solid var(--color-primary); }
+  #__RVC_ID__ .ra-judge .ra-branches::after { content:''; position:absolute; top:28px; left:calc((100% - 32px) / 4); right:calc((100% - 32px) / 4); border-top:2px solid var(--color-primary); }
+  #__RVC_ID__ .ra-judge .ra-branch::before, #__RVC_ID__ .ra-judge .ra-branch:first-child::before, #__RVC_ID__ .ra-judge .ra-branch:last-child::before { top:-28px; bottom:auto; left:50%; height:28px; }
+  #__RVC_ID__ .ra-judge .ra-branch::after { content:none; }
+  #__RVC_ID__ .ra-judge .ra-ans { margin:0 auto -18px; }
+}
+@container (max-width:599px) {
+  #__RVC_ID__ .ra-flow { padding:20px 16px; }
+}

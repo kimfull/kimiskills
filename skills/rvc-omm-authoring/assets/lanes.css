@@ -1,0 +1,22 @@
+/* rvc-omm lanes：泳道圖（2–4 道 × 3–6 步）。要接在 flow.css 後面：窄時沿用流程的直排，每步標角色 */
+#__RVC_ID__ .ra-lanes > .ra-lane-name { display:none; }
+#__RVC_ID__ .ra-chain.ra-lanes > li.ra-lane-name::before, #__RVC_ID__ .ra-chain.ra-lanes > li.ra-lane-name::after { content:none; }
+#__RVC_ID__ .ra-lanes .ra-who { justify-self:start; margin-bottom:4px; font-size:16px; font-weight:600; color:color-mix(in srgb,var(--color-base-content) 65%,transparent); }
+#__RVC_ID__ .ra-lanes .ra-hand { color:var(--color-primary); word-break:keep-all; overflow-wrap:anywhere; }
+/* 1–4 步 680px 起橫排；5–6 步 880px 起橫排。ol 上寫 --steps，每步寫 --r（第幾道）與 --c（第幾步） */
+@container (min-width:680px) {
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) { grid-template-columns:repeat(var(--steps),minmax(0,1fr)); column-gap:16px; row-gap:12px; padding-left:96px; }
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) > .ra-lane-name { display:flex; align-items:center; grid-column:1 / -1; grid-row:var(--r); margin-left:-96px; padding:0 12px; background:var(--color-base-200); border-radius:6px; font-size:16px; font-weight:500; }
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) > .ra-lstep { display:block; grid-column:var(--c); grid-row:var(--r); padding:16px 0; }
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) > .ra-lstep > .ra-no { width:32px; height:32px; margin-bottom:8px; }
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) > .ra-lstep::before, #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) > .ra-lstep::after { display:none; }
+  #__RVC_ID__ .ra-lanes:not(:has(> .ra-lstep:nth-last-child(5))) .ra-who { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+}
+@container (min-width:880px) {
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) { grid-template-columns:repeat(var(--steps),minmax(0,1fr)); column-gap:16px; row-gap:12px; padding-left:96px; }
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) > .ra-lane-name { display:flex; align-items:center; grid-column:1 / -1; grid-row:var(--r); margin-left:-96px; padding:0 12px; background:var(--color-base-200); border-radius:6px; font-size:16px; font-weight:500; }
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) > .ra-lstep { display:block; grid-column:var(--c); grid-row:var(--r); padding:16px 0; }
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) > .ra-lstep > .ra-no { width:32px; height:32px; margin-bottom:8px; }
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) > .ra-lstep::before, #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) > .ra-lstep::after { display:none; }
+  #__RVC_ID__ .ra-lanes:has(> .ra-lstep:nth-last-child(5)) .ra-who { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+}

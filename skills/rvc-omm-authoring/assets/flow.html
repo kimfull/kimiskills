@@ -1,20 +1,21 @@
 <section id="__SECTION_ID__" class="ra-section" aria-labelledby="__SECTION_ID__-title">
   <div class="ra-heading ra-copy"><h3 id="__SECTION_ID__-title">完整流程，一次展開。</h3></div>
-  <div class="ra-prose ra-copy"><p>以下是閱讀版面的示例流程。主線與結果同時可見，依實際任務改寫各步驟與判斷。</p></div>
+  <div class="ra-prose ra-copy"><p>這是示例流程：2–6 步，判斷可省。依實際任務改寫，不補假步驟或假分支。</p></div>
   <figure class="ra-figure">
     <div class="ra-flow">
-      <ol class="ra-steps">
-        <li><span class="ra-number" aria-hidden="true">01</span><h4>整理內容</h4><p>確認結論與必要前提。</p></li>
-        <li><span class="ra-number" aria-hidden="true">02</span><h4>安排圖文</h4><p>用文字說原因，用圖說關係。</p></li>
-        <li><span class="ra-number" aria-hidden="true">03</span><h4>檢查閱讀</h4><p>分別看桌面與手機。</p></li>
+      <ol class="ra-chain">
+        <li><span class="ra-no" aria-hidden="true">01</span><h4>整理內容</h4><p class="ra-out">產出：結論與前提</p></li>
+        <li><span class="ra-no" aria-hidden="true">02</span><h4>安排圖文</h4><p>用文字說原因，用圖說關係。</p><p class="ra-out">產出：候選頁</p></li>
+        <li><span class="ra-no" aria-hidden="true">03</span><h4>檢查閱讀</h4><p class="ra-out">產出：檢查結果</p></li>
       </ol>
-      <div class="ra-arrow" aria-hidden="true">↓</div>
-      <p class="ra-decision">重點與關係都清楚了嗎？</p>
-      <div class="ra-branches">
-        <div><h4>是：保留這版</h4><p>讀者能直接理解，再回看細節。</p></div>
-        <div><h4>否：回到內容調整</h4><p>拆開過長段落或重新安排順序。</p></div>
+      <div class="ra-judge">
+        <p class="ra-decision"><span class="ra-diamond" aria-hidden="true"></span>重點與關係都清楚了嗎？</p>
+        <div class="ra-branches">
+          <div class="ra-branch is-yes"><p class="ra-ans">是</p><div class="ra-bcard"><h4>保留這版</h4><p>讀者能直接理解。</p><p class="ra-goto is-end">結束</p></div></div>
+          <div class="ra-branch is-no"><p class="ra-ans">否</p><div class="ra-bcard"><h4>調整內容</h4><p>拆開過長段落或重排順序。</p><p class="ra-goto is-loop">回到 02</p></div></div>
+        </div>
       </div>
     </div>
-    <figcaption class="ra-copy">主流程與兩種結果全部展開，手機依序往下閱讀。</figcaption>
+    <figcaption class="ra-copy">每步寫「產出：…」；判斷後每個結果寫去向：回頭用 is-loop，停下用 is-end。</figcaption>
   </figure>
 </section>

@@ -1,0 +1,27 @@
+/* rvc-omm zones：三區圖（2–4 區）＋可省略的共同帶。共同帶的 .ra-zone-links 項數與順序要和上方各區一致 */
+#__RVC_ID__ .ra-zones { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
+#__RVC_ID__ .ra-zone { position:relative; min-width:0; padding:20px; background:var(--color-base-200); border:1px solid var(--color-base-300); border-radius:6px; }
+#__RVC_ID__ .ra-zones h4 { font-size:18px; line-height:1.5; }
+#__RVC_ID__ .ra-zones p { font-size:16px; line-height:1.7; }
+#__RVC_ID__ .ra-zone .ra-zone-src { margin-top:4px; font-size:14px; color:color-mix(in srgb,var(--color-base-content) 60%,transparent); overflow-wrap:anywhere; }
+#__RVC_ID__ .ra-zone-list { list-style:none; margin:12px 0 0; padding:0; font-size:16px; line-height:1.7; }
+#__RVC_ID__ .ra-zone-list > li + li { margin-top:4px; }
+#__RVC_ID__ .ra-zone-shared { grid-column:1 / -1; min-width:0; margin-top:8px; padding:20px; border:2px solid var(--color-primary); border-radius:6px; background:color-mix(in srgb,var(--color-primary) 8%,transparent); }
+#__RVC_ID__ .ra-zone-links { list-style:none; margin:12px 0 0; padding:0; display:grid; grid-template-columns:minmax(0,1fr); gap:8px; font-size:16px; line-height:1.7; }
+#__RVC_ID__ .ra-zone-links b { font-weight:500; color:var(--color-primary); margin-right:8px; }
+/* 2–3 區 600px 起橫排；4 區 760px 起橫排 */
+@container (min-width:600px) {
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(2)):not(:has(> .ra-zone:nth-child(3))) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(3)):not(:has(> .ra-zone:nth-child(4))) { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  #__RVC_ID__ .ra-zones:not(:has(> .ra-zone:nth-child(4))) { row-gap:32px; }
+  #__RVC_ID__ .ra-zones:not(:has(> .ra-zone:nth-child(4))):has(> .ra-zone-shared) > .ra-zone::after { content:''; position:absolute; left:50%; bottom:-34px; height:32px; border-left:2px solid var(--color-primary); }
+  #__RVC_ID__ .ra-zones:not(:has(> .ra-zone:nth-child(4))) > .ra-zone-shared { margin-top:0; }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(2)):not(:has(> .ra-zone:nth-child(3))) .ra-zone-links { grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:16px; }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(3)):not(:has(> .ra-zone:nth-child(4))) .ra-zone-links { grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:16px; }
+}
+@container (min-width:760px) {
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(4)) { grid-template-columns:repeat(4,minmax(0,1fr)); row-gap:32px; }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(4)):has(> .ra-zone-shared) > .ra-zone::after { content:''; position:absolute; left:50%; bottom:-34px; height:32px; border-left:2px solid var(--color-primary); }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(4)) > .ra-zone-shared { margin-top:0; }
+  #__RVC_ID__ .ra-zones:has(> .ra-zone:nth-child(4)) .ra-zone-links { grid-template-columns:repeat(4,minmax(0,1fr)); column-gap:16px; }
+}

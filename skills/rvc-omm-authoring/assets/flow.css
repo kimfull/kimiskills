@@ -28,8 +28,8 @@
 }
 /* 判斷：置中的框，分岔線接到「是」實心／「否」空心標籤，結果卡底部寫去向 */
 #__RVC_ID__ .ra-judge { margin-top:40px; }
-#__RVC_ID__ .ra-judge .ra-decision { display:flex; align-items:center; justify-content:flex-start; gap:12px; width:100%; margin:0; padding:12px 24px; border:2px solid var(--color-primary); border-radius:999px; background:var(--color-base-100); font-size:18px; font-weight:600; line-height:1.5; text-align:center; }
-#__RVC_ID__ .ra-judge .ra-diamond { flex:none; width:14px; height:14px; border:2px solid var(--color-primary); transform:rotate(45deg); }
+#__RVC_ID__ .ra-judge .ra-decision { display:block; text-align:left; width:100%; margin:0; padding:12px 24px; border:2px solid var(--color-primary); border-radius:999px; background:var(--color-base-100); font-size:18px; font-weight:600; line-height:1.5; text-align:center; }
+#__RVC_ID__ .ra-judge .ra-diamond { display:inline-block; vertical-align:-1px; margin-right:12px; width:14px; height:14px; border:2px solid var(--color-primary); transform:rotate(45deg); }
 #__RVC_ID__ .ra-judge .ra-branches { position:relative; margin-top:0; padding:24px 0 0 40px; display:grid; grid-template-columns:minmax(0,1fr); gap:32px; }
 /* 窄時：判斷框下方一條主幹，分別接到「是」「否」，兩個結果並列在主幹右邊 */
 #__RVC_ID__ .ra-judge .ra-branch::before { content:''; position:absolute; left:-18px; top:-32px; bottom:0; border-left:2px solid var(--color-primary); }
@@ -44,12 +44,12 @@
 #__RVC_ID__ .ra-judge .ra-bcard { flex:1; padding:32px 20px 20px; border:1px solid var(--color-base-300); border-radius:6px; background:var(--color-base-100); }
 #__RVC_ID__ .ra-judge .ra-bcard h4 { font-size:18px; line-height:1.5; }
 #__RVC_ID__ .ra-judge .ra-bcard p { margin-top:8px; font-size:16px; line-height:1.7; }
-#__RVC_ID__ .ra-judge .ra-goto { display:flex; align-items:center; gap:8px; margin-top:16px; padding-top:12px; border-top:1px dashed var(--color-base-300); font-weight:600; color:var(--color-primary); }
-#__RVC_ID__ .ra-judge .ra-goto.is-loop::before { content:'↺'; font-size:20px; line-height:1; }
-#__RVC_ID__ .ra-judge .ra-goto.is-end::before { content:''; width:12px; height:12px; border-radius:2px; background:var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-goto { display:block; margin-top:16px; padding-top:12px; border-top:1px dashed var(--color-base-300); font-weight:600; color:var(--color-primary); }
+#__RVC_ID__ .ra-judge .ra-goto.is-loop::before { content:'↺'; display:inline-block; margin-right:8px; font-size:20px; line-height:1; vertical-align:-2px; }
+#__RVC_ID__ .ra-judge .ra-goto.is-end::before { content:''; display:inline-block; margin-right:8px; vertical-align:0; width:12px; height:12px; border-radius:2px; background:var(--color-primary); }
 /* 寬時：判斷框置中，往下分岔到左右兩個結果 */
 @container (min-width:600px) {
-  #__RVC_ID__ .ra-judge .ra-decision { justify-content:center; width:fit-content; max-width:100%; margin:0 auto; }
+  #__RVC_ID__ .ra-judge .ra-decision { text-align:center; width:fit-content; max-width:100%; margin:0 auto; }
   #__RVC_ID__ .ra-judge .ra-branches { grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px; padding:56px 0 0; }
   #__RVC_ID__ .ra-judge .ra-branches::before { content:''; position:absolute; top:0; left:50%; height:28px; border-left:2px solid var(--color-primary); }
   #__RVC_ID__ .ra-judge .ra-branches::after { content:''; position:absolute; top:28px; left:calc((100% - 32px) / 4); right:calc((100% - 32px) / 4); border-top:2px solid var(--color-primary); }

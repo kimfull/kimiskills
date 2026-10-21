@@ -42,7 +42,10 @@ ALLOWED_TAGS = {'article', 'div', 'header', 'section', 'h2', 'h3', 'h4', 'p', 'u
 # 深度 1 看子元素，深度 2 看每個 li 的子元素
 CHILDREN = {'ra-chain': (2, {'ra-no', 'ra-who', 'h4', 'p'}), 'ra-road': (2, {'ra-when', 'h4', 'badge', 'p'}),
             'ra-zone': (1, {'h4', 'p', 'ra-zone-list'}), 'ra-zone-shared': (1, {'h4', 'ra-zone-links'}),
-            'ra-bcard': (1, {'h4', 'p'}), 'ra-zone-list': (2, INLINE), 'ra-zone-links': (2, INLINE)}
+            'ra-bcard': (1, {'h4', 'p'}), 'ra-branch': (1, {'ra-ans', 'ra-bcard'}),
+            'ra-zone-list': (2, INLINE), 'ra-zone-links': (2, INLINE)}
+# 放字的格子只收行內元素（格子裡塞區塊元素就判要驗畫面）
+TEXT_CELLS = {'p', 'h4', 'td', 'th', 'caption'}
 LANE_STYLE = {'ra-lanes': r'--steps', 'ra-lane-name': r'--r', 'ra-lstep': r'--r\s*:\s*\d+\s*;\s*--c'}
 
 
@@ -220,6 +223,8 @@ def check(path, record_path):
             placed = (n.parent.tag == 'p' and n.parent.parent is not None and 'ra-prose' in n.parent.parent.cls) or ('ra-figure' in n.parent.cls)
             if not (a.get('alt') or '').strip() or any(k in a for k in ('width', 'height', 'style', 'class', 'srcset')) or not placed:
                 need.append('圖片要有 alt、不寫尺寸／樣式／class，並直接放在 .ra-prose 的段落或 figure.ra-figure 裡才算驗過')
+            if not (a.get('src') or '').startswith('/images/'):
+                need.append('圖片要先用上傳工具放到 /images/，外連或內嵌圖片要驗畫面')
         if n.tag == 'pre' and 'ra-prose' not in (n.parent.cls if n.parent else set()):
             need.append('pre 只有直接放在 .ra-prose 裡才驗過')
         if n.tag == 'table':
@@ -228,9 +233,19 @@ def check(path, record_path):
                 need.append(f'比較表有範本以外的部分：{" ".join(extra)}')
         for key, (depth, allowed) in CHILDREN.items():
             if key in c:
-                kids_ok = n.children if depth == 1 else [y for x in n.children if 'ra-lane-name' not in x.cls for y in x.children]
-                if any(not child_ok(x, allowed) for x in kids_ok):
+                holders = [n] if depth == 1 else [x for x in n.children if 'ra-lane-name' not in x.cls]
+                if any(not child_ok(y, allowed) for x in holders for y in x.children):
                     need.append(f'{key} 裡放了範本以外的元素')
+                if depth == 2 and key in ('ra-chain', 'ra-road') and any(isinstance(t, str) and t.strip() for x in holders for t in x.parts):
+                    need.append(f'{key} 的每一項要把字放進 h4 或 p，不能直接寫在 li 裡')
+                if depth == 1 and any(isinstance(t, str) and t.strip() for t in n.parts):
+                    need.append(f'{key} 裡的字要放進 h4 或 p')
+        if in_figure(n) and (n.tag in TEXT_CELLS or c & {'ra-ans', 'ra-when'}) and any(x.tag not in INLINE for x in n.children):
+            need.append(f'{n.tag} 格子裡放了區塊元素，範本只驗過文字與行內元素')
+        if 'ra-legend' in c and any(x.tag != 'span' or [y for y in x.children if 'badge' not in y.cls] or len(x.children) != 1 for x in n.children):
+            need.append('ra-legend 每一項要是 span，裡面只放一個狀態詞 badge 加說明文字')
+        if n.tag == 'figure' and 'ra-figure' not in c:
+            need.append('figure 沒有加 ra-figure，站台會把圖說擠到旁邊')
         if n.tag == 'table' and 'ra-compare' not in c:
             need.append('有不是 ra-compare 的表格')
         unknown = sorted(t for t in c if t not in known)

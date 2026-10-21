@@ -31,11 +31,18 @@ MARK = re.compile(r'/\* rvc-omm:([a-z-]+):begin \*/\n(.*?)\n/\* rvc-omm:\1:end \
 # 已驗範圍（改這裡等於改了檢查工具，範本驗證紀錄會失效）
 RANGES = {'flow': (2, 6), 'road': (3, 6), 'ba': (3, 8), 'zones': (2, 4), 'lanes': (2, 4), 'lane_steps': (3, 6),
           'options': (2, 4), 'criteria': (2, 5)}
-TEXT_MAX = {'h4': 12, 'block': 40, 'criterion': 6, 'option': 12, 'caption': 20, 'lane': 5, 'when': 8, 'word': 32}
+TEXT_MAX = {'h4': 12, 'block': 40, 'decision': 24, 'criterion': 6, 'option': 12, 'caption': 20, 'lane': 5, 'when': 8, 'word': 32}
 EXTRA_CLASSES = {'card', 'card-body', 'badge', 'badge-primary', 'badge-outline', 'badge-ghost', 'badge-sm'}
-RISKY_TAGS = {'svg', 'iframe', 'script', 'link', 'img', 'video', 'audio', 'canvas', 'object', 'embed', 'form',
-              'input', 'button', 'select', 'textarea', 'details', 'dialog', 'picture'}
 INLINE = {'span', 'b', 'strong', 'em', 'i', 'a', 'code', 'wbr', 'br', 'small', 'mark', 'sup', 'sub', 'time'}
+# 文章裡只認這些標籤；其他標籤（svg、iframe、script、link、表單、details、math…）一律判要驗畫面
+ALLOWED_TAGS = {'article', 'div', 'header', 'section', 'h2', 'h3', 'h4', 'p', 'ul', 'ol', 'li', 'figure', 'figcaption',
+                'span', 'b', 'strong', 'em', 'i', 'a', 'code', 'pre', 'br', 'wbr', 'small', 'time', 'img', 'style',
+                'table', 'caption', 'thead', 'tbody', 'tr', 'th', 'td'}
+# 範本裡各種節點允許的子元素（tag 或 class）；多出來的子元素判要驗畫面
+# 深度 1 看子元素，深度 2 看每個 li 的子元素
+CHILDREN = {'ra-chain': (2, {'ra-no', 'ra-who', 'h4', 'p'}), 'ra-road': (2, {'ra-when', 'h4', 'badge', 'p'}),
+            'ra-zone': (1, {'h4', 'p', 'ra-zone-list'}), 'ra-zone-shared': (1, {'h4', 'ra-zone-links'}),
+            'ra-bcard': (1, {'h4', 'p'}), 'ra-zone-list': (2, INLINE), 'ra-zone-links': (2, INLINE)}
 LANE_STYLE = {'ra-lanes': r'--steps', 'ra-lane-name': r'--r', 'ra-lstep': r'--r\s*:\s*\d+\s*;\s*--c'}
 
 
@@ -164,6 +171,10 @@ def in_figure(n):
     return False
 
 
+def child_ok(child, allowed):
+    return child.tag in allowed or bool(child.cls & allowed)
+
+
 def check(path, record_path):
     src = Path(path).read_text(encoding='utf8')
     errors, need = [], []
@@ -177,6 +188,12 @@ def check(path, record_path):
         errors.append('要剛好一個 article，且 id 符合格式')
         return report(errors, need, [])
     art, art_id = arts[0], arts[0].attrs['id']
+    # Worker 會把整份原稿嵌進頁面，article 外面的任何內容都會影響整頁
+    outside = [p for p in tree.root.parts if p is not art and not (isinstance(p, str) and not p.strip())]
+    if outside:
+        errors.append('article 外面還有內容（原稿只能有一個 article）')
+    if not re.match(r'\s*<article\b', src) or not re.search(r'</article>\s*$', src) or src.count('</article>') != 1:
+        errors.append('原稿要從 <article> 開始、以 </article> 結束，而且只有一個 article')
     styles = [n for n in art.walk() if n.tag == 'style']
     if len(styles) != 1:
         need.append(f'文章裡有 {len(styles)} 個 style，範本只用一個')
@@ -196,8 +213,24 @@ def check(path, record_path):
     figs = set()
     for n in art.walk():
         c = n.cls
-        if n.tag in RISKY_TAGS:
+        if n.tag not in ALLOWED_TAGS:
             need.append(f'有 {n.tag} 元素，範本沒驗過')
+        if n.tag == 'img':
+            a = n.attrs
+            placed = (n.parent.tag == 'p' and n.parent.parent is not None and 'ra-prose' in n.parent.parent.cls) or ('ra-figure' in n.parent.cls)
+            if not (a.get('alt') or '').strip() or any(k in a for k in ('width', 'height', 'style', 'class', 'srcset')) or not placed:
+                need.append('圖片要有 alt、不寫尺寸／樣式／class，並直接放在 .ra-prose 的段落或 figure.ra-figure 裡才算驗過')
+        if n.tag == 'pre' and 'ra-prose' not in (n.parent.cls if n.parent else set()):
+            need.append('pre 只有直接放在 .ra-prose 裡才驗過')
+        if n.tag == 'table':
+            extra = [x.tag for x in n.children if x.tag not in ('caption', 'thead', 'tbody')]
+            if extra:
+                need.append(f'比較表有範本以外的部分：{" ".join(extra)}')
+        for key, (depth, allowed) in CHILDREN.items():
+            if key in c:
+                kids_ok = n.children if depth == 1 else [y for x in n.children if 'ra-lane-name' not in x.cls for y in x.children]
+                if any(not child_ok(x, allowed) for x in kids_ok):
+                    need.append(f'{key} 裡放了範本以外的元素')
         if n.tag == 'table' and 'ra-compare' not in c:
             need.append('有不是 ra-compare 的表格')
         unknown = sorted(t for t in c if t not in known)
@@ -208,6 +241,14 @@ def check(path, record_path):
             ok = [k for k, pat in LANE_STYLE.items() if k in c and re.fullmatch(rf'\s*{pat}\s*:\s*\d+\s*;?\s*', st)]
             if not ok:
                 need.append(f'有行內樣式：{n.tag} style="{st[:40]}"')
+        if n.tag == 'figure' and 'ra-figure' in c:
+            body = [x for x in n.children if x.tag != 'figcaption']
+            caps = [x for x in n.children if x.tag == 'figcaption']
+            root = body[0] if body else None
+            kind = next((k for k in ('ra-flow', 'ra-road', 'ra-ba', 'ra-zones', 'ra-lanes', 'ra-compare') if root is not None and k in root.cls), 'img' if root is not None and root.tag == 'img' else None)
+            legend_ok = len(body) == 2 and kind == 'ra-road' and 'ra-legend' in body[1].cls
+            if kind is None or not (len(body) == 1 or legend_ok) or len(caps) > 1 or (caps and n.children[-1] is not caps[0]):
+                need.append('figure 裡只能放一個範本（路線圖可再接一個 ra-legend），圖說放最後')
         roots = {'ra-flow', 'ra-chain', 'ra-road', 'ra-ba', 'ra-zones', 'ra-compare', 'ra-judge'}
         if c & roots and not in_figure(n):
             errors.append(f'{" ".join(sorted(c & roots))} 要放在 figure.ra-figure 裡')
@@ -223,11 +264,11 @@ def check(path, record_path):
             if not lo <= k <= hi:
                 need.append(f'流程 {k} 步，超出已驗的 {lo}–{hi} 步')
         if 'ra-flow' in c:
-            j = [x for x in n.walk() if 'ra-judge' in x.cls]
-            if len(j) > 1:
-                need.append(f'一個流程放了 {len(j)} 個判斷，範本只驗過 1 個')
-            if j and j[0].parent is not n:
-                errors.append('ra-judge 要直接放在 ra-flow 裡、接在流程後面')
+            shape = ['chain' if 'ra-chain' in x.cls else 'judge' if 'ra-judge' in x.cls else x.tag for x in n.children]
+            if shape not in (['chain'], ['chain', 'judge']):
+                errors.append('ra-flow 裡只能放一條 ra-chain，後面最多接一個 ra-judge')
+            if sum('ra-judge' in x.cls for x in n.walk()) > 1:
+                need.append('一個流程放了不只一個判斷，範本只驗過 1 個')
         if 'ra-judge' in c:
             figs.add('flow')
             dec = kids(n, 'ra-decision')
@@ -242,6 +283,11 @@ def check(path, record_path):
                 for b in br:
                     if not any('ra-goto' in x.cls and ({'is-loop', 'is-end'} & x.cls) for x in b.walk()):
                         errors.append('每個判斷結果都要寫 ra-goto（is-loop 或 is-end）')
+                        break
+                    ans = [x for x in b.children if 'ra-ans' in x.cls]
+                    want = '是' if 'is-yes' in b.cls else '否'
+                    if len(ans) != 1 or ans[0].text().strip() != want:
+                        errors.append('判斷結果的標籤只能寫「是」或「否」，並和 is-yes／is-no 對應')
                         break
         if 'ra-road' in c:
             figs.add('road')
@@ -329,7 +375,7 @@ def check(path, record_path):
                 t, lim = x.text(lambda n: 'badge' in n.cls), TEXT_MAX['option']
             else:
                 t = x.inline_text()
-                lim = (TEXT_MAX['h4'] if x.tag == 'h4' else TEXT_MAX['criterion'] if x.tag == 'th'
+                lim = (TEXT_MAX['h4'] if x.tag == 'h4' else TEXT_MAX['decision'] if 'ra-decision' in x.cls else TEXT_MAX['criterion'] if x.tag == 'th'
                        else TEXT_MAX['caption'] if x.tag == 'caption' else TEXT_MAX['lane'] if 'ra-lane-name' in x.cls
                        else TEXT_MAX['block'])
             if t.strip() and width(t) > lim:

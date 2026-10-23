@@ -1,6 +1,6 @@
 interface:
   display_name: "RVC 圖文寫作"
-  short_description: "撰寫與更新 RVC 圖文頁，套用完整展開的流程、比較與閱讀版面並驗證發布結果"
+  short_description: "撰寫與發布 RVC 圖文頁，套用完整展開的流程、比較與閱讀版面，預設無須額外檢查"
   default_prompt: "請使用 $rvc-omm-authoring，將這份內容整理成易讀的 RVC 圖文頁。"
 policy:
   allow_implicit_invocation: true

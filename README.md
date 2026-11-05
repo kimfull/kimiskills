@@ -1,7 +1,8 @@
 # kimiskills
 
-- 最後更新：2026-10-20 14:09（Asia/Taipei，UTC+08:00）。
+- 最後更新：2026-11-05 12:45（Asia/Taipei，UTC+08:00）。
 - 內容確認：
+  - 2026-11-05 12:45（Asia/Taipei，UTC+08:00）：新增 `pstack-verify-harness` 1.0 的技能表、收錄說明與驗證範圍段落；只重查這個範圍。
   - 2026-10-20 14:09（Asia/Taipei，UTC+08:00）：`project-docs` 1.2 的技能表、文件分工、分組指令與相關說明（含 1.1 的 todo／handoff 點名規則、1.2 的 ARCHITECTURE.md）；只重查這個範圍。
   - 2026-10-18 18:44（Asia/Taipei，UTC+08:00）：`rvc-omm-authoring` 的收錄範圍、檔案與使用說明，以及本檔對應的技能表、使用與驗證範圍段落；只重查這個範圍。
   - 2026-10-13 21:51（Asia/Taipei，UTC+08:00）：`project-docs` 的名稱、資料夾路徑與本檔的相關連結（由 `project-handoff` 改名）；只重查這個範圍。
@@ -17,7 +18,7 @@
   - 分組指令（2026-10-13 21:19）：`2032ca0ff44d1386d3677f66f7b6ee9401cec49d`。當時工作目錄有未提交的變更：`skills/project-handoff/` 的 `SKILL.md` 與 `references/` 的 `handoff.md`、`status.md`、`readme.md`，本檔、`.gitignore`，以及新增的 `AGENTS.md`、`CLAUDE.md`；已隨 `c6a3945` 進版。
   - `lean-coding`（2026-10-13 06:40）：`0a780ae33dc9aca7a5a1f76a502d8a686fba6829`。當時工作目錄有未提交的變更：新增 `skills/lean-coding/` 的兩個檔與本檔修改，已隨 `2032ca0` 進版。
 
-供不同 AI 工具共用的自製技能。目前收錄 `project-docs`（原名 `project-handoff`）、`lean-coding` 與 `rvc-omm-authoring`；不包含第三方技能、專案資料、金鑰或本機測試紀錄。
+供不同 AI 工具共用的自製技能。目前收錄 `project-docs`（原名 `project-handoff`）、`lean-coding`、`rvc-omm-authoring` 與 `pstack-verify-harness`；不包含第三方技能、專案資料、金鑰或本機測試紀錄。
 
 ## 技能
 
@@ -25,6 +26,7 @@
 | --- | --- |
 | [project-docs](skills/project-docs/SKILL.md) | 整理 README、todo、status、handoff 與 ARCHITECTURE，核對事實、版本與接手範圍 |
 | [rvc-omm-authoring](skills/rvc-omm-authoring/SKILL.md) | 撰寫與更新 RVC（AI 圖文回覆站）的頁面：依內容選文字、流程或比較表，套用閱讀版面、範本與補 block 片段，依條件驗收畫面；需要使用者自己的 RVC 站台專案與規範 |
+| [pstack-verify-harness](skills/pstack-verify-harness/SKILL.md) | 讓 agent 改完程式後自己把 app 跑起來、照使用者流程操作並留下證據，才宣稱完成；也為專案建立與維護固定的驗證流程（Feature Map）。移植自 Lauren Tan 的 pstack；**草稿，尚未驗證** |
 | [lean-coding](skills/lean-coding/SKILL.md) | 寫程式與改程式時的輕量準則：最小充分變更、驗證力度跟著風險走、架構有需求才加；附 Cloudflare Workers 的取捨與防呆參考 |
 
 `project-docs` 各份文件的分工：README 介紹專案與使用方法；todo 記錄待辦與安排；status 記錄實際狀態、決策與等主人處理的事；handoff 提供最新交接及下一個動作；ARCHITECTURE（選配）給要改程式的人看元件地圖、資料流與不能打破的邊界。按需求建立，不強制湊齊。
@@ -90,3 +92,9 @@ git clone https://github.com/kimfull/kimiskills.git
 
 - 已核對：方案與成品各經獨立 QA（多輪），必修都已修正並複驗；技能格式與相對連結；在真實站台外框以 1350／450／375／640／641px 量測寬度上限、手機左右留白、各項間距、清單、程式碼、長字串與補 block，並人工看截圖。
 - 沒有驗證：各 AI 工具對自然語言的實際觸發；Windows 等其他電腦的安裝與發布。
+
+`pstack-verify-harness`（2026-11-05）：
+
+- 狀態：1.0 草稿，尚未驗證，不建議裝進全域技能目錄。
+- 已核對：兩次獨立唯讀 QA。結論是可進入下一輪修改，但有三項必修尚未處理：清理只靠共用目錄與 PID、可能誤停或誤刪其他執行；Maintain 修完 harness 後沒有強制重跑；clean／changed／blocked 判定無法區分失敗、不可達與部分完成。
+- 沒有驗證：各 AI 工具的實際觸發；在實際專案或小型 fixture 上試跑；Windows 原生環境的執行。
